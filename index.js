@@ -59,6 +59,11 @@ eventEmitter.addListener('NDEFMessages', (event) => {
   _nfcNDEFReaderSessions[event.sessionId].emit('NDEFMessages', event.messages.map(formatMessage));
 });
 
+eventEmitter.addListener('NDEFSessionClosed', (event) => {
+  console.log({ event });
+  _nfcNDEFReaderSessions[event.sessionId].emit('NDEFSessionClosed');
+});
+
 export class NFCNDEFReaderSession {
   constructor({ alertMessage = null, invalidateAfterFirstRead = false } = {}) {
     // ID generated to multiplex session messages over native event emitter
@@ -71,6 +76,7 @@ export class NFCNDEFReaderSession {
     // Event listeners for this session
     this.listenersForType = {
       NDEFMessages: [],
+      NDEFSessionClosed: []
     };
 
     _nfcNDEFReaderSessions[this.id] = this;
